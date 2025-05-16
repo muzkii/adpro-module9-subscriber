@@ -30,3 +30,10 @@ It follows the structure:
 ##### Summary:
 So, `amqp://guest:guest@localhost:5672` means:  
 > “Connect to RabbitMQ running on my own machine (`localhost`), using username `guest` and password `guest`, over port `5672` using the AMQP protocol.”
+
+### Simulation Slow Subscriber
+![image](https://github.com/user-attachments/assets/bf745a75-2d50-4dab-95fe-2142d2e76efe)
+
+As shown in the image above, there are 35 messages in the queue. This happened because I ran `cargo run` on the publisher 7 times in quick succession. This indicates that the number of messages in the queue increases based on how many messages the publisher sends.
+In the `main.rs` file of the subscriber, we've added a `thread::sleep(_ten_millis);` line, which slows down the subscriber's processing rate by introducing a delay between each message. As a result, the subscriber now handles messages one at a time at a fixed interval.
+Because of this delay, if the publisher continues to send more messages while the subscriber is still processing, those messages will begin to stack up in the queue. This leads to unprocessed messages accumulating until the subscriber catches up.
